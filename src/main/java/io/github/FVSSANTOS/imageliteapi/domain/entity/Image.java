@@ -38,7 +38,7 @@ public class Image {
     @Column
     private Long size;
     @Enumerated(EnumType.STRING)
-    private ImageExtension extesion;
+    private ImageExtension extension;
     @Column
     @CreatedDate
     private LocalDateTime uploadDate;
