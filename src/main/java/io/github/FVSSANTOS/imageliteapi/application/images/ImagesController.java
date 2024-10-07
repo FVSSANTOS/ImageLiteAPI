@@ -18,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import io.github.FVSSANTOS.imageliteapi.domain.entity.Image;
-import io.github.FVSSANTOS.imageliteapi.domain.enums.ImageExtension;
 import io.github.FVSSANTOS.imageliteapi.domain.sevice.ImageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
