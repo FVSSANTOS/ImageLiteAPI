@@ -16,8 +16,6 @@ import static io.github.FVSSANTOS.imageliteapi.infra.repository.specs.ImageSpecs
 public interface ImageRepository extends JpaRepository<Image, String>, JpaSpecificationExecutor<Image>{
 
     default List<Image> findByExtensionAndNameOrTagsLike(ImageExtension extension, String query){
-
-
         Specification<Image> spec = Specification.where(GenericSpecs.conjunction());
 
         if(extension != null){
