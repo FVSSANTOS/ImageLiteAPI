@@ -3,6 +3,8 @@ package io.github.FVSSANTOS.imageliteapi.application.images;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -13,5 +15,6 @@ public class ImageDTO {
     private String name;
     private String extension;
     private Long size;
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDateTime uploadDate;
 }
