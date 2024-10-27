@@ -16,5 +16,5 @@ public class ImageDTO {
     private String extension;
     private Long size;
     @JsonFormat(pattern = "dd/MM/yyyy")
-    private LocalDateTime uploadDate;
+    private LocalDate uploadDate;
 }
