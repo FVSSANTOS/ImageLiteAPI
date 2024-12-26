@@ -1,6 +1,6 @@
 "use client";
 
-import { Template, ImageCard, Button, InputText } from '@/components';
+import { Template, ImageCard, Button, InputText, useNotification } from '@/components';
 import { Image } from '@/resources/image/image.resource';
 import { useImageService } from '@/resources/image/image.service';
 import { useState } from 'react';
@@ -10,16 +10,21 @@ import Link from 'next/link';
 export default function GaleriaPage(){
 
     const useService  = useImageService();
+    const notification = useNotification();
     const [images, setImages] = useState<Image[]>([])
     const [query, setQuery] = useState<string>('')
     const [extension, setExtension] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(false)
 
     async function searchImages(){
-        setLoading(true)
+        setLoading(true);
         const result = await useService.buscar(query, extension);
         setImages(result);
-        setLoading(false)
+        setLoading(false);
+
+        if(!result.length){
+            notification.notify('No results found!', 'warning');
+        }
     }
     
     function renderImageCard(image: Image){
@@ -43,7 +48,7 @@ export default function GaleriaPage(){
             <section className='flex flex-col items-center justify-center my-5'>
 
                 <div className='flex space-x-4'>
-                    <InputText placeHolder='Type Name or Tags' onChange={event => setQuery(event.target.value)}/>
+                    <InputText placeHolder='Type Name or Tags' onChange={event => setQuery(event.target.value)} id={''}/>
                     <select  onChange={event => setExtension(event.target.value)}
                              className='border px-4 py-2 rounded-lg text-gray-900'>
                         <option value="">All formats</option>
@@ -52,10 +57,10 @@ export default function GaleriaPage(){
                         <option value="GIF">GIF</option>
                     </select>
 
-                    <Button style='bg-blue-500 hover: bg-blue-300' label='Search' onClick={searchImages}/>
+                    <Button style='bg-blue-500 hover:bg-blue-300' label='Search' onClick={searchImages}/>
 
                     <Link href="/formulario">
-                        <Button style='bg-yellow-500 hover: bg-blue-300' label='add New' />
+                        <Button style='bg-yellow-500 hover:bg-blue-300' label='Add New' />
                     </Link>
                 </div>
 
