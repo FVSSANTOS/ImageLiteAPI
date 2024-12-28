@@ -19,7 +19,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table
+@Table(name = "auth_user")
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @NoArgsConstructor
