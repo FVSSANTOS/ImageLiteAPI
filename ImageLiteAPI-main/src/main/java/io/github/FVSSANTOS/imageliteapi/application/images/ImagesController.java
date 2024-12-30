@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/v1/images")
 @Slf4j
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class ImagesController {
 
 
