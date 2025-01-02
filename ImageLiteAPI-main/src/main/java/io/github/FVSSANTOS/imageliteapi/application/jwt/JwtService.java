@@ -6,13 +6,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
 import org.springframework.stereotype.Service;
 
 import io.github.FVSSANTOS.imageliteapi.domain.AcessToken;
 import io.github.FVSSANTOS.imageliteapi.domain.entity.User;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 
@@ -48,5 +49,22 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", user.getName());
         return claims;
+    }
+
+
+    public String getEmailFromToken(String tokenJwt){
+    
+        try {
+
+            JwtParser build = Jwts.parser()
+                                .verifyWith(keyGenerator.getKey())
+                                .build();
+
+            Jws<Claims> jwsClaims = build.parseSignedClaims(tokenJwt);
+            Claims claims = jwsClaims.getPayload();
+            return claims.getSubject();
+        } catch (JwtException e){
+            throw new InvalidTokenException(e.getMessage());
+        }
     }
 }

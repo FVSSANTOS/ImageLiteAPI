@@ -1,29 +1,60 @@
 'use client'
 
-import { Template, RenderIf, InputText, Button, FieldError } from '@/components'
+import { Template, RenderIf, InputText, Button, FieldError, useNotification } from '@/components'
 import { CredentialsForm, formScheme, validationScheme } from './fomrScheme'
 import { useFormik } from 'formik'
 import { useState } from 'react'
+import { useAuth} from '@/resources'
+import { useRouter } from 'next/navigation'
+import { AcessToken, Credentials, User } from '@/resources/user/user.resource'
 
 export default function Login() {
     
     const [loading, setLoading] = useState<boolean>(false);
     const [newUserState, setNewUserState] = useState<boolean>(false);
 
-    const {values, handleChange, handleSubmit, errors} = useFormik<CredentialsForm>({
+    const auth = useAuth();
+    const notification = useNotification();
+    const router = useRouter();
+
+    const {values, handleChange, handleSubmit, errors, resetForm} = useFormik<CredentialsForm>({
         initialValues: formScheme,
         validationSchema: validationScheme,
         onSubmit: onSubmit
     })
 
     async function onSubmit(values: CredentialsForm){
-        console.log(values)
+        if(!newUserState){
+            const credentials: Credentials = { email: values.email, password: values.password }
+            try {
+                const acessToken: AcessToken = await auth.authenticate(credentials);
+                auth.initSession(acessToken);
+                auth.isSessionValid();
+                router.push("/galeria");
+            }catch(error: any){
+                const message = error?.message;
+                notification.notify(message, "error");
+            }
+        } else {
+
+            const user: User = { email: values.email, name: values.name, password: values.password }
+
+            try {
+                await auth.save(user);
+                notification.notify("Success on saving user!", "success");
+                resetForm();
+                setNewUserState(false);
+            } catch(error: any) {
+                const message = error?.message;
+                notification.notify(message, "error");
+            }
+        }
     }
 
     return (
         <Template loading={loading}>
 
-            <div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
+            <div className='flex min-h-full flex-1 flex-col justify-center items-center px-6 py-12 lg:px-8'>
 
                 <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
                     <h2 className='mt-10 text-center text-1x1 font-bold leading-9 tracking-tight text-gray-900'>
@@ -31,7 +62,7 @@ export default function Login() {
                     </h2>
                 </div>
 
-                <div className='mt-10 sm:mx-autp sm:w-full sm:max-w-sm'>
+                <div className='mt-10 sm:mx-autp sm:w-full sm:max-w-sm '>
                     <form onSubmit={handleSubmit} className='space-y-2'>
                         <RenderIf condition={newUserState}>
                             <div>
@@ -85,19 +116,19 @@ export default function Login() {
 
                         <div>
                             <RenderIf condition={newUserState}>
-                                <Button type='submit' style='bg--indigo-700 hover:bg-indigo-500' label='Save'/>
+                                <Button type='submit' style='bg-indigo-700 hover:bg-indigo-500' label='Save'/>
                                 <Button type='button' 
-                                        style='bg--red-700 hover:bg-red-500 mx-2' 
+                                        style='bg-red-700 hover:bg-red-500 mx-2' 
                                         label='Cancel' 
                                         onClick={event => setNewUserState(false)}/>
                             </RenderIf>
 
                             <RenderIf condition={!newUserState}>
                                 <Button type='submit' 
-                                        style='bg--indigo-700 hover:bg-indigo-500' 
+                                        style='bg-indigo-700 hover:bg-indigo-500' 
                                         label='Login'/>
                                 <Button type='button' 
-                                        style='bg--red-700 hover:bg-red-500 mx-2' 
+                                        style='bg-red-700 hover:bg-red-500 mx-2' 
                                         label='Sign up'
                                         onClick={event => setNewUserState(true)}/>
                             </RenderIf>
