@@ -53,7 +53,7 @@ O sistema Image Lite é uma aplicação web para cadastrar imagens, criando um e
 
 
 
-## Deploy
+## Deploy Backend
 
 Para fazer o deploy do projeto backend rode
 
